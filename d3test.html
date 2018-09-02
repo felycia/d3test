@@ -13,20 +13,29 @@
 
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script>
-  var dataset = [[4,5,1,7],[1,8,3,4],[5,6,3,100]];
-  var width = 500;
+  var input = {
+    "domain": {
+      "x" : ['12AM', '6AM', '12PM', '6PM'],
+      "y" : ['monday', 'tuesday', 'wednesday']
+    },
+    "data" : [[4,5,1,7],[1,8,3,100],[5,6,3,100]]
+  }
+
+  var width = 1500;
   var height = 500;
-  var xDomain = ['12AM', '6AM', '12PM', '6PM'];
-  var yDomain = ['monday', 'tuesday', 'wednesday'];
+  var maxRadius = 25;
+  var gridSize = 60;
+  var leftPadding = 150;
+  var topPadding = 70;
 
   var xScale = d3.scaleOrdinal()
-    .domain(xDomain)
-    .range([0, 60, 120, 180]);
+    .domain(input.domain.x)
+    .range(d3.range(0, gridSize * input.domain.x.length, gridSize));
   var xAxis = d3.axisTop(xScale);
 
   var yScale = d3.scaleOrdinal()
-    .domain(yDomain)
-    .range([0, 60, 120]);
+    .domain(input.domain.y)
+    .range(d3.range(0, gridSize * input.domain.y.length, gridSize));
   var yAxis = d3.axisLeft(yScale);
 
   var chart = d3.select(".chart")
@@ -35,20 +44,19 @@
 
   chart.append("g")
     .attr("class", "x-axis")
-    .attr("transform", "translate(150,30)")
+    .attr("transform", "translate(" + leftPadding + "," + (topPadding - 40)+ ")")
     .call(xAxis);
 
   chart.append("g")
     .attr("class", "y-axis")
-    .attr("transform", "translate(90,70)")
+    .attr("transform", "translate(90," + topPadding + ")")
     .call(yAxis);
 
   var row = chart
     .selectAll("svg")
-      .data( dataset)
+      .data(input.data)
     .enter().append("svg")
-      .attr("y", function(d, i) {return (i*60 + 10)})
-      .attr("height", 120);
+      .attr("y", function(d, i) {return (i * gridSize + topPadding - gridSize)});
 
   function generateColor(size) {
     if(size <= 3) {return d3.interpolateGnBu(0.25)}
