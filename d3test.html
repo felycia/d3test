@@ -21,6 +21,21 @@
     "data" : [[4,5,1,7],[1,8,3,100],[5,6,3,100]]
   }
 
+  var data = [
+    {"day": "monday", "hour": "12AM", "value": 4},
+    {"day": "monday", "hour": "6AM", "value": 5},
+    {"day": "monday", "hour": "12PM", "value": 1},
+    {"day": "monday", "hour": "6PM", "value": 7},
+    {"day": "tuesday", "hour": "12AM", "value": 1},
+    {"day": "tuesday", "hour": "6AM", "value": 8},
+    {"day": "tuesday", "hour": "12PM", "value": 3},
+    {"day": "tuesday", "hour": "6PM", "value": 100},
+    {"day": "wednesday", "hour": "12AM", "value": 5},
+    {"day": "wednesday", "hour": "6AM", "value": 6},
+    {"day": "wednesday", "hour": "12PM", "value": 3},
+    {"day": "wednesday", "hour": "6PM", "value": 100}
+  ]
+
   var width = 1500;
   var height = 500;
   var maxRadius = 25;
@@ -52,11 +67,11 @@
     .attr("transform", "translate(90," + topPadding + ")")
     .call(yAxis);
 
-  var row = chart
-    .selectAll("svg")
-      .data(input.data)
-    .enter().append("svg")
-      .attr("y", function(d, i) {return (i * gridSize + topPadding - gridSize)});
+  // var row = chart
+  //   .selectAll("svg")
+  //     .data(input.data)
+  //   .enter().append("svg")
+  //     .attr("y", function(d, i) {return (i * gridSize + topPadding - gridSize)});
 
   function generateColor(size) {
     if(size <= 3) {return d3.interpolateGnBu(0.25)}
@@ -65,12 +80,12 @@
     else {return d3.interpolateGnBu(1)};
   }
 
-  var circle = row.selectAll("circle")
-      .data( function(d,i) { return d; } )
+  var circle = chart.selectAll("circle")
+      .data(data)
     .enter().append("circle")
-      .style("r", function(d,i) { if (d*3 > 25) {return 25} else {return d*3} })
-      .style("cx", function(d,i) { return (i * 60) + 150; })
-      .style("cy", 60)
-      .style("fill", function (d) {return generateColor(d)});
+      .style("r", function(d) { if (d.value*3 > 25) {return 25} else {return d.value*3} })
+      .style("cx", function(d) { return xScale(d.hour) + leftPadding; })
+      .style("cy", function(d) {return yScale(d.day) + topPadding})
+      .style("fill", function (d) {return generateColor(d.value)});
 </script>
 </html>
